@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Walk on the Wild Side · Bisher und Neu</title>
+<script src="besuch.js" defer></script>
+<style>
+@font-face{font-family:"Prata";src:url(../assets/schrift/prata-latin.woff2) format("woff2");font-weight:400;font-display:swap}
+:root{--nacht:#1C1513;--tief:#130E0D;--hell:#F2E9DC;--fg2:rgba(242,233,220,.68);--kerze:#D8B264;--kerze-hell:#E6CC93;--rot:#F0323F;--linie:rgba(242,233,220,.12);--kopf:58px;--mono:ui-monospace,"SF Mono",Menlo,monospace;--sans:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--tief);color:var(--hell);font:15px/1.5 var(--sans);-webkit-font-smoothing:antialiased;overflow:hidden}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
+.kopf{position:fixed;inset:0 0 auto 0;height:var(--kopf);display:flex;align-items:center;gap:18px;padding:0 18px;background:var(--nacht);border-bottom:1px solid var(--linie);z-index:20}
+.marke{display:block;color:var(--rot);line-height:0}.marke svg{height:17px;width:auto;display:block}
+.unter{display:block;font:500 13px/1.2 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--kerze-hell);margin-top:2px;white-space:nowrap}
+.seiten{display:flex;gap:4px;margin-left:12px;overflow-x:auto;scrollbar-width:none}
+.seiten button{padding:7px 12px;border-radius:999px;color:var(--fg2);white-space:nowrap;font-size:14px}
+.seiten button:hover{color:var(--hell)}
+.seiten button.an{background:rgba(250,244,244,.1);color:var(--hell)}
+.kopf-r{margin-left:auto;display:flex;gap:8px;align-items:center}
+.kn{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border:1px solid var(--linie);border-radius:999px;font-size:14px;white-space:nowrap}
+.kn:hover{border-color:rgba(250,244,244,.35)}
+.kn.an{background:var(--kerze);border-color:var(--kerze);color:#1C1513}
+.kn b{font:500 13px/1 var(--mono);padding:4px 8px;border-radius:999px;background:var(--kerze);color:#1C1513}
+.kn.an b{background:#1C1513;color:var(--kerze-hell)}
+.buehne{position:fixed;inset:var(--kopf) 0 0 0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:minmax(0,1fr);gap:1px;background:var(--linie)}
+.buehne.mit-kunde{grid-template-columns:repeat(3,minmax(0,1fr))}   /* 06.11.2026 Robert: alle drei Fenster gleich breit, gleich gross */
+.buehne.mit-liste,.buehne.mit-fragen{padding-right:360px}
+.fenster{position:relative;background:var(--tief);min-width:0;min-height:0;display:flex;flex-direction:column}
+.f-rahmen{flex:1;position:relative;overflow:hidden;background:#1a1920}
+.f-rahmen iframe{position:absolute;left:0;top:0;width:100%;height:100%;border:0;background:#1a1920;transform-origin:0 0}
+.etikett{position:absolute;top:10px;left:10px;z-index:3;display:inline-flex;align-items:center;gap:8px;padding:5px 10px;border-radius:999px;background:rgba(19,14,13,.86);backdrop-filter:blur(8px);font:500 13px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--hell);pointer-events:none}
+.etikett i{width:8px;height:8px;border-radius:50%;background:var(--fg2)}
+.f-neu .etikett i{background:var(--kerze)}
+.f-kunde .etikett i{background:#CBD3DD}
+.f-kunde{display:none}
+.mit-kunde .f-kunde{display:flex}
+.liste{position:fixed;top:var(--kopf);right:0;bottom:0;width:360px;background:var(--nacht);border-left:1px solid var(--linie);overflow:auto;transform:translateX(100%);transition:transform .35s cubic-bezier(.2,.7,.2,1);z-index:15}
+.mit-liste .liste,.mit-liste~.liste,body:has(.mit-liste) .liste{transform:none}
+.liste h2{margin:0;padding:18px 20px 10px;font:500 13px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--kerze-hell)}
+.liste p.hinweis{margin:0;padding:0 20px 14px;color:var(--fg2);font-size:13.5px}
+.liste ol{list-style:none;margin:0;padding:0 10px 30px}
+.liste li{display:grid;grid-template-columns:30px 1fr;gap:12px;padding:12px 10px;border-top:1px solid var(--linie);cursor:pointer;border-radius:8px}
+.liste li:hover{background:rgba(250,244,244,.05)}
+.liste li.an{background:rgba(216,178,100,.14)}
+.nr{width:26px;height:26px;border-radius:50%;background:var(--kerze);color:#1C1513;font:600 13px/26px var(--mono);text-align:center}
+.liste li b{display:block;font-weight:500;font-size:14.5px;line-height:1.35}
+.liste li .vn{margin-top:6px;font-size:13px;line-height:1.45;color:var(--fg2)}
+.liste li .vn s{opacity:.7}
+.liste li .vn em{display:block;font-style:normal;color:var(--hell)}
+.liste li .ks{margin-top:6px;font:500 13px/1.2 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--kerze-hell)}
+.fragen{width:440px}
+.buehne.mit-fragen{padding-right:440px}
+.mit-fragen~.fragen,body:has(.mit-fragen) .fragen{transform:none}
+.fragen ol{counter-reset:f}
+.fragen li{grid-template-columns:30px 1fr;cursor:default}
+.fragen li:hover{background:none}
+.fragen li p{margin:8px 0 0;font-size:13.5px;line-height:1.5;color:var(--fg2)}
+.fragen li p.zu{color:var(--hell)}
+.fragen .fb{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.fragen .fb figure{margin:0;min-width:0}
+.fragen .fb img{display:block;width:100%;aspect-ratio:3/2;object-fit:cover;object-position:50% 0;border-radius:8px;border:1px solid var(--linie);cursor:zoom-in}
+.fragen .fb figcaption{margin-top:5px;font:500 13px/1.3 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--kerze-hell)}
+.fragen .hin{display:inline-flex;align-items:center;gap:8px;margin-top:12px;padding:7px 13px;border:1px solid var(--linie);border-radius:999px;font-size:13px}
+.fragen .hin:hover{border-color:rgba(242,233,220,.35)}
+.gross{position:fixed;inset:0;z-index:40;background:rgba(10,7,6,.92);display:none;align-items:center;justify-content:center;padding:24px;cursor:zoom-out}
+.gross.an{display:flex}
+.gross img{max-width:100%;max-height:100%;border-radius:10px}
+.tabs{display:none}
+@media (max-width:960px){
+  :root{--kopf:104px}
+  .kopf{flex-wrap:wrap;gap:6px 10px;padding:8px 12px;align-items:center;align-content:start}
+  .kopf>div:first-child{flex:1;min-width:0}
+  .marke svg{height:14px}
+  .unter{overflow:hidden;text-overflow:ellipsis;font-size:13px}
+  .kopf-r{margin-left:0;gap:6px}
+  .kn{padding:6px 10px;font-size:13px}
+  .kn b{padding:3px 6px;font-size:13px}
+  .seiten{order:3;width:100%;margin:0}
+  .seiten button{padding:6px 10px;font-size:13px}
+  .buehne,.buehne.mit-kunde{grid-template-columns:1fr;padding-right:0!important}
+  .fenster{display:none}
+  .buehne[data-tab="alt"] .f-alt,.buehne[data-tab="neu"] .f-neu,.buehne[data-tab="kunde"] .f-kunde{display:flex}
+  .tabs{display:flex;position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:20;background:var(--nacht);border:1px solid var(--linie);border-radius:999px;padding:4px;gap:2px}
+  .tabs button{padding:8px 14px;border-radius:999px;font-size:13px;color:var(--fg2)}
+  .tabs button.an{background:var(--kerze);color:#1C1513}
+  .liste,.fragen{width:100%;border-left:0}
+  .fragen .fb{grid-template-columns:minmax(0,1fr)}
+}
+</style>
+</head>
+<body>
+<header class="kopf">
+  <div><span class="marke"><svg viewBox="0 -2.0 1770.75 181.0" role="img" aria-label="Walk on the Wild Side"><g fill="currentColor"><path transform="translate(-307.22 -151.00)" d="M326.22 328 307.22 151H341.81L351.57 262.73L361.52 151H394.51L403.96 262.73L413.42 151H448.41L429.1 328H386.66L377.81 242.82L369.37 328ZM452.64 328 469.73 151H529.77L546.57 328H513.08L510.56 299.44H489.24L487.03 328ZM491.76 271.18H507.85L500.11 181.17H498.5ZM555.92 328V151H591.32V297.83H627.73V328ZM636.27 328V151H671.27V221.9L687.77 151H723.37L703.55 232.06L727.49 328H690.78L671.47 242.32V328Z"/><path transform="translate(187.17 -433.50)" d="M331.87 612.12Q310.53 612.12 299.25 599.22Q287.97 586.33 287.97 561.95V477.4Q287.97 454.55 299.15 442.71Q310.32 430.88 331.87 430.88Q353.41 430.88 364.58 442.71Q375.76 454.55 375.76 477.4V561.95Q375.76 586.33 364.48 599.22Q353.21 612.12 331.87 612.12ZM332.17 579.35Q340.26 579.35 340.26 563.67V476.8Q340.26 463.65 332.37 463.65Q323.47 463.65 323.47 477.1V563.88Q323.47 572.17 325.49 575.76Q327.52 579.35 332.17 579.35ZM388.5 610.5V432.5H425.11L441.5 517.76V432.5H475.88V610.5H441.09L423.29 521.5V610.5ZM552.24 610.5V466.68H531.1V432.5H608.98V466.68H587.84V610.5ZM617.27 610.5V432.5H652.67V496.11H669.46V432.5H704.86V610.5H669.46V529.79H652.67V610.5ZM719.02 610.5V432.5H790.22V466.89H755.22V501.58H788.8V535.05H755.22V575.81H792.54V610.5Z"/><path transform="translate(864.85 -715.00)" d="M188.85 892 169.73 714H204.52L214.33 826.36L224.34 714H257.52L267.02 826.36L276.53 714H311.73L292.31 892H249.63L240.73 806.34L232.23 892ZM318.91 892V714H353.29V892ZM365.63 892V714H401.23V861.66H437.84V892ZM446.14 892V714H495.09Q514.3 714 524.01 724.67Q533.72 735.34 533.72 755.87V839.21Q533.72 864.49 524.87 878.25Q516.02 892 493.87 892ZM481.94 860.55H488.11Q497.92 860.55 497.92 851.04V759.21Q497.92 750.31 495.54 747.73Q493.16 745.15 485.88 745.15H481.94ZM635.46 893.62Q611.09 893.62 600.32 881.48Q589.55 869.35 589.55 842.85V825.45H624.74V847.7Q624.74 853.87 626.61 857.36Q628.49 860.85 633.14 860.85Q637.99 860.85 639.86 858.02Q641.73 855.19 641.73 848.71Q641.73 840.52 640.12 835.01Q638.5 829.5 634.5 824.49Q630.51 819.49 623.43 812.81L607.45 797.64Q589.55 780.75 589.55 759.01Q589.55 736.25 600.12 724.32Q610.69 712.38 630.71 712.38Q655.19 712.38 665.45 725.43Q675.72 738.48 675.72 765.07H639.51V752.84Q639.51 749.2 637.44 747.17Q635.36 745.15 631.82 745.15Q627.58 745.15 625.6 747.53Q623.63 749.9 623.63 753.65Q623.63 757.39 625.65 761.74Q627.68 766.09 633.64 771.75L654.17 791.47Q660.34 797.34 665.5 803.86Q670.66 810.38 673.79 819.03Q676.93 827.68 676.93 840.12Q676.93 865.2 667.68 879.41Q658.42 893.62 635.46 893.62ZM685.32 892V714H719.71V892ZM732.05 892V714H781Q800.21 714 809.92 724.67Q819.63 735.34 819.63 755.87V839.21Q819.63 864.49 810.78 878.25Q801.93 892 779.79 892ZM767.85 860.55H774.02Q783.83 860.55 783.83 851.04V759.21Q783.83 750.31 781.45 747.73Q779.08 745.15 771.8 745.15H767.85ZM832.38 892V714H903.58V748.39H868.58V783.08H902.16V816.55H868.58V857.31H905.9V892Z"/></g></svg></span><span class="unter">Bisher und neu · Korrekturen vom 19. November 2026</span></div>
+  <nav class="seiten" id="seiten" aria-label="Seiten"></nav>
+  <div class="kopf-r">
+    <button class="kn" id="kn-liste" type="button" aria-pressed="false"><span>Korrekturen</span><b id="anzahl">0</b></button>
+    <button class="kn" id="kn-kunde" type="button" aria-pressed="false"><span>Eure Anmerkungen</span></button>
+    <button class="kn" id="kn-fragen" type="button" aria-pressed="false"><span>Fragen an euch</span><b id="anzahl-f">0</b></button>
+  </div>
+</header>
+<main class="buehne" id="buehne" data-tab="neu">
+  <section class="fenster f-alt"><div class="f-rahmen"><iframe id="f-alt" title="Bisherige Website"></iframe></div><p class="etikett"><i></i>Bisher</p></section>
+  <section class="fenster f-neu"><div class="f-rahmen"><iframe id="f-neu" title="Korrigierte Website"></iframe></div><p class="etikett"><i></i>Neu</p></section>
+  <section class="fenster f-kunde"><div class="f-rahmen"><iframe id="f-kunde" title="Bisherige Website mit euren Anmerkungen"></iframe></div><p class="etikett"><i></i>Eure Anmerkungen</p></section>
+</main>
+<aside class="liste" id="liste"><h2>Korrekturen auf dieser Seite</h2><p class="hinweis">Antippen springt in beiden Fenstern an die Stelle. Die Nummern stehen auch direkt an den Stellen.</p><ol id="liste-ol"></ol></aside>
+<aside class="liste fragen" id="fragen"><h2>Fragen an euch</h2><p class="hinweis">An diesen Stellen haben wir eure Anmerkung so umgesetzt, wie wir sie verstanden haben. Bitte kurz bestätigen oder korrigieren.</p><ol id="fragen-ol"></ol></aside>
+<div class="gross" id="gross"><img alt=""></div>
+<nav class="tabs" aria-label="Fenster"><button data-tab="alt" type="button">Bisher</button><button data-tab="neu" class="an" type="button">Neu</button><button data-tab="kunde" type="button">Anmerkungen</button></nav>
+<script>
+var SEITEN = [["index", "Startseite"], ["drinks", "Drinks"], ["programm", "Programm"], ["tafel", "Feiern"], ["haus", "Das Haus"], ["besuch", "Besuch"]], K = {"index": [{"t": "Leiste oben: neues Logo", "sel": ".leiste .logo", "kunde": 1, "vorher": "Rote Form «WILD SIDE»", "nachher": "Schriftzug «WALK ON THE WILD SIDE» auf einer Zeile"}, {"t": "Auftakt: neues Logo", "sel": ".at-logo", "kunde": 1, "vorher": "Rote Form «WILD SIDE»", "nachher": "Schriftzug «WALK ON THE WILD SIDE» auf einer Zeile"}, {"t": "Die Bar: neues Logo im Kasten", "sel": ".bw4-logo", "kunde": 1, "vorher": "Rote Form «WILD SIDE»", "nachher": "Schriftzug «WALK ON THE WILD SIDE» auf einer Zeile"}, {"t": "Die Bar: oberes Bild getauscht", "sel": ".bw4-r .bw4-b:nth-child(1)", "kunde": 2, "vorher": "Momo schüttelt einen Drink, daneben ein Gast", "nachher": "Momo vor dem NEGRONI-Schriftzug, euer Foto"}, {"t": "Die Bar: unteres Bild getauscht", "sel": ".bw4-r .bw4-b:nth-child(2)", "kunde": 2, "vorher": "Eine Runde stösst mit kleinen Gläsern an", "nachher": "Zwei Gäste an der Bar, euer Foto"}, {"t": "An der Theke: neue Überschrift", "neu": {"sel": "#drinks .th-kopf h2"}, "alt": {"sel": "#drinks .th-kopf h2"}, "kunde": 3, "vorher": "Was magst du?", "nachher": "Du sagst, was du magst."}, {"t": "An der Theke: neuer Text", "neu": {"text": "Auf unserer wechselnden Karte"}, "alt": {"text": "Eine Getränkekarte gibt es im Wild Side nicht."}, "kunde": 3, "vorher": "Eine Getränkekarte gibt es im Wild Side nicht. Wer an die Theke kommt, wird gefragt, was er mag, und Momo macht daraus einen Drink. So sieht das aus.", "nachher": "Auf unserer wechselnden Karte findest du die Signature Drinks des Wild Side. Du kannst dich auch von Momo überraschen lassen. Erzähl ihm, was du magst, und er mixt dir einen Drink ganz nach deinem Geschmack."}, {"t": "«Erst fragt Momo»: neuer Satz", "neu": {"text": "Sauer, süß, fruchtig oder herb?"}, "alt": {"text": "Sauer oder süss, klar oder cremig"}, "kunde": 3, "vorher": "Sauer oder süss, klar oder cremig, Gin oder lieber gar kein Alkohol.", "nachher": "Sauer, süß, fruchtig oder herb? Mit oder ohne Alkohol?"}, {"t": "«Dann wählt er die Zutaten»: neuer Satz", "neu": {"text": "Momo findet die Kombination"}, "alt": {"text": "Nach dem, was du ihm gesagt hast."}, "kunde": 3, "vorher": "Nach dem, was du ihm gesagt hast.", "nachher": "Momo findet die Kombination, die deine Lieblingsaromen zur Geltung bringt."}, {"t": "«Zum Schluss das Garnish»: neue Überschrift", "neu": {"exakt": "Zum Schluss das Garnish."}, "alt": {"exakt": "Zum Schluss der Schaum."}, "kunde": 4, "vorher": "Zum Schluss der Schaum.", "nachher": "Zum Schluss das Garnish."}, {"t": "«Zum Schluss das Garnish»: neuer Satz", "neu": {"text": "Wie zum Beispiel die hausgemachte"}, "alt": {"text": "Aus dem Siphon, direkt aufs Glas."}, "kunde": 4, "vorher": "Aus dem Siphon, direkt aufs Glas.", "nachher": "Wie zum Beispiel die hausgemachte Yuzu-Espuma. Aus dem Siphon direkt auf deinen Drink."}, {"t": "«Und dann ist es deiner»: neuer Satz", "neu": {"text": "Ein Drink, ganz nach deinem Geschmack."}, "alt": {"text": "Ein Drink, den es nur an diesem Abend gibt."}, "kunde": 4, "vorher": "Ein Drink, den es nur an diesem Abend gibt.", "nachher": "Ein Drink, ganz nach deinem Geschmack."}, {"t": "Die lange Tafel: euer Satz eingesetzt", "neu": {"text": "Dann können 10 bis 14 Personen"}, "alt": {"text": "Dann steht dort eine lange Tafel"}, "kunde": 5, "vorher": "Dann steht dort eine lange Tafel, Momo mixt die Drinks passend zum Menü, und unten läuft der Abend weiter wie immer.", "nachher": "Dann können 10 bis 14 Personen bei einem privaten Dinner sich an der langen Tafel einfinden."}, {"t": "Die lange Tafel: Infos neu aufgebaut", "sel": "#tafel .tk-gaenge", "kunde": 5, "vorher": "Wo · Für wen · Ab 30 Personen · Hochzeiten · Drinks · Wie", "nachher": "Gruppen und Geburtstage (10 bis 14 sitzend, bis 20 ohne festen Sitzplatz) · Private Dinner und Culinarium (fest 14) · Ab 30 Personen (Bar geschlossen) · Menü (individuell)"}, {"t": "Unter demselben Dach: «Tanz in den Mai» raus, Jubiläum am 1. Dezember", "neu": {"text": "Silvester mit Frühschoppen und das Jubiläum"}, "alt": {"text": "Silvester mit Frühschoppen, der Geburtstag"}, "kunde": 7, "vorher": "Silvester mit Frühschoppen, der Geburtstag der Bar im Winter, Tanz in den Mai.", "nachher": "Silvester mit Frühschoppen und das Jubiläum der Bar am 1. Dezember."}, {"t": "Fuss: neues Logo", "sel": ".f03-logo", "kunde": 1, "vorher": "Rote Form «WILD SIDE»", "nachher": "Schriftzug «WALK ON THE WILD SIDE» auf einer Zeile"}], "drinks": [{"t": "Leiste oben: neues Logo", "sel": ".leiste .logo", "kunde": 1, "vorher": "Rote Form «WILD SIDE»", "nachher": "Schriftzug «WALK ON THE WILD SIDE» auf einer Zeile"}, {"t": "Fuss: neues Logo", "sel": ".f03-logo", "kunde": 1, "vorher": "Rote Form «WILD SIDE»", "nachher": "Schriftzug «WALK ON THE WILD SIDE» auf einer Zeile"}], "programm": [{"t": "Leiste oben: neues Logo", "sel": ".leiste .logo", "kunde": 1, "vorher": "Rote Form «WILD SIDE»", "nachher": "Schriftzug «WALK ON THE WILD SIDE» auf einer Zeile"}, {"t": "Gastschichten: neuer Text", "neu": {"text": "Immer wieder teilt Momo den Tresen"}, "alt": {"text": "An manchen Abenden steht neben Momo jemand"}, "kunde": 6, "vorher": "An manchen Abenden steht neben Momo jemand aus einer anderen Bar, aus Hannover oder Berlin, und bringt eigene Drinks mit. Fünf Gastschichten aus dem Jahr 2024.", "nachher": "Immer wieder teilt Momo den Tresen mit renommierten Bartendern aus ganz Deutschland. Für ihre Gastschicht bringen sie eigene Drinks mit und zeigen, was ihre Bar ausmacht. Ein Rückblick auf einige unserer Gastschichten."}, {"t": "Gastschichten: Nils Lutterbach raus", "neu": {"sel": "#gaeste .vk-reihe"}, "alt": {"sel": "#gaeste .vk-p:nth-child(3)"}, "kunde": 6, "vorher": "Nils Lutterbach, 20.04.2024", "nachher": "entfällt"}, {"t": "Gastschichten: Cold Drinks and More raus", "neu": {"sel": "#gaeste .vk-reihe"}, "alt": {"sel": "#gaeste .vk-p:nth-child(4)"}, "kunde": 6, "vorher": "Cold Drinks and More, 25.05.2024", "nachher": "entfällt"}, {"t": "Die Feste: «Drei Abende»", "neu": {"text": "Drei Abende, die"}, "alt": {"text": "Vier Abende, die"}, "kunde": 7, "vorher": "Vier Abende, die jedes Jahr kommen.", "nachher": "Drei Abende, die jedes Jahr kommen."}, {"t": "Silvester: neuer Titel", "neu": {"exakt": "Silvester-Frühschoppen"}, "alt": {"exakt": "Silvester ab mittags"}, "kunde": 7, "vorher": "Silvester ab mittags", "nachher": "Silvester-Frühschoppen"}, {"t": "Silvester: euer Text", "neu": {"text": "Am 31. Dezember feiern wir von 12 bis 22 Uhr"}, "alt": {"text": "2024 als Frühschoppen von 12 bis 19 Uhr"}, "kunde": 7, "vorher": "2024 als Frühschoppen von 12 bis 19 Uhr mit Buffet, 2025 von 12 bis 20 Uhr mit dem Foodtruck von Tru Story vor der Tür. Abends geht es weiter.", "nachher": "Am 31. Dezember feiern wir von 12 bis 22 Uhr. Die DJs legen auf, am Tresen gibt’s Momos Signature Drinks und Mexikaner. Vor der Tür ist jedes Jahr ein anderer Foodtruck zu Gast. Der Eintritt ist frei."}, {"t": "Jubiläum: neuer Titel", "neu": {"exakt": "Jubiläum"}, "alt": {"exakt": "Der Geburtstag der Bar"}, "kunde": 7, "vorher": "Der Geburtstag der Bar", "nachher": "Jubiläum"}, {"t": "Jubiläum: euer Text", "neu": {"text": "Am 1. Dezember hat das Wild Side Geburtstag"}, "alt": {"text": "Am 30. November 2024 wurde die neue Wild Side eins"}, "kunde": 7, "vorher": "Am 30. November 2024 wurde die neue Wild Side eins, am 5. Dezember 2025 zwei. Mit DJs, Mexikanern und einem Drink zur Begrüssung für die ersten Gäste.", "nachher": "Am 1. Dezember hat das Wild Side Geburtstag. Das feiern wir mit DJs, guter Laune und am liebsten mit euch allen. Für die ersten Gäste gibt’s zur Begrüßung einen Drink aufs Haus."}, {"t": "Tanz in den Mai raus", "neu": {"sel": "#feste .vier"}, "alt": {"sel": "#feste .vier > .platte:nth-child(3)"}, "kunde": 7, "vorher": "30. April · Tanz in den Mai", "nachher": "entfällt, drei Feste"}, {"t": "Fuss: neues Logo", "sel": ".f03-logo", "kunde": 1, "vorher": "Rote Form «WILD SIDE»", "nachher": "Schriftzug «WALK ON THE WILD SIDE» auf einer Zeile"}], "tafel": [{"t": "Leiste oben: neues Logo", "sel": ".leiste .logo", "kunde": 1, "vorher": "Rote Form «WILD SIDE»", "nachher": "Schriftzug «WALK ON THE WILD SIDE» auf einer Zeile"}, {"t": "Fuss: neues Logo", "sel": ".f03-logo", "kunde": 1, "vorher": "Rote Form «WILD SIDE»", "nachher": "Schriftzug «WALK ON THE WILD SIDE» auf einer Zeile"}], "haus": [{"t": "Leiste oben: neues Logo", "sel": ".leiste .logo", "kunde": 1, "vorher": "Rote Form «WILD SIDE»", "nachher": "Schriftzug «WALK ON THE WILD SIDE» auf einer Zeile"}, {"t": "Fuss: neues Logo", "sel": ".f03-logo", "kunde": 1, "vorher": "Rote Form «WILD SIDE»", "nachher": "Schriftzug «WALK ON THE WILD SIDE» auf einer Zeile"}], "besuch": [{"t": "Leiste oben: neues Logo", "sel": ".leiste .logo", "kunde": 1, "vorher": "Rote Form «WILD SIDE»", "nachher": "Schriftzug «WALK ON THE WILD SIDE» auf einer Zeile"}, {"t": "Die Ecke: neues Logo", "sel": ".wk-logo", "kunde": 1, "vorher": "Rote Form «WILD SIDE»", "nachher": "Schriftzug «WALK ON THE WILD SIDE» auf einer Zeile"}, {"t": "Fuss: neues Logo", "sel": ".f03-logo", "kunde": 1, "vorher": "Rote Form «WILD SIDE»", "nachher": "Schriftzug «WALK ON THE WILD SIDE» auf einer Zeile"}]}, FRAGEN = [{"t": "Die zwei Bilder im Abschnitt «Eure Nachbarschafts-Mixology-Bar»", "seite": "index", "nr": 4, "text": "Auf Seite 2 eures PDFs liegen über diesem Abschnitt zwei eurer Fotos: Momo vor dem NEGRONI-Schriftzug und zwei Gäste an der Bar. Wir haben die beiden Bilder rechts durch genau diese Fotos ersetzt. Habt ihr das so gemeint, oder sollen andere Fotos aus eurer Mail hinein?", "zusatz": "Das Foto von Momo steht auf der Startseite auch bei «Erst fragt Momo». Sollen wir es dort gegen ein anderes tauschen, damit es nicht zweimal vorkommt?", "bilder": [["f1-pdf.jpg", "Euer PDF, Seite 2"], ["f1-neu.jpg", "So haben wir es umgesetzt"]]}, {"t": "Der Satz bei «Die lange Tafel»", "seite": "index", "nr": 13, "text": "Euren Satz «Dann können 10 bis 14 Personen bei einem privaten Dinner sich an der langen Tafel einfinden.» haben wir anstelle von «Dann steht dort eine lange Tafel, Momo mixt die Drinks passend zum Menü, und unten läuft der Abend weiter wie immer.» eingesetzt. Der erste Satz «An manchen Abenden gehört der obere Teil der Bar einer einzigen Runde.» ist geblieben. Ist das die Stelle, die ihr mit den beiden X markiert habt?", "zusatz": "", "bilder": [["f2-pdf.jpg", "Euer PDF, Seite 5"], ["f2-neu.jpg", "So haben wir es umgesetzt"]]}, {"t": "Das Logo «WALK ON THE WILD SIDE»", "seite": "index", "nr": 2, "text": "Auf Seite 1 habt ihr das Logo im Auftakt markiert. Wir haben den Schriftzug überall eingesetzt, wo bisher die rote «WILD SIDE»-Form stand: oben in der Leiste, im Auftakt, im Kasten zur Bar, im Fuss jeder Seite und bei der Ecke auf der Besuch-Seite. Soll das Logo überall so stehen, oder nur im Auftakt?", "zusatz": "", "bilder": [["f3-pdf.jpg", "Euer PDF, Seite 1"], ["f3-neu.jpg", "So haben wir es umgesetzt"]]}], BASIS = 1440, FRAMES = ['alt', 'neu', 'kunde'];
+var fa = document.getElementById('f-alt'), fn = document.getElementById('f-neu'), fk = document.getElementById('f-kunde'), buehne = document.getElementById('buehne');
+var seite = (location.hash.match(/seite=([\w-]+)/) || [])[1] || 'index';
+if (!SEITEN.some(function (s) { return s[0] === seite; })) seite = 'index';
+var treiber = null, treiberTmr = 0, aktiv = -1, gefunden = {alt: [], neu: [], kunde: []}, skala = {alt: 1, neu: 1, kunde: 1};
+var STIL = '.korr-el{outline:calc(2px * var(--kf,1)) solid #D8B264!important;outline-offset:calc(6px * var(--kf,1));border-radius:6px}.korr-ebene{position:absolute;left:0;top:0;width:100%;height:0;overflow:visible;z-index:9999;pointer-events:none}' +
+  '.korr-nr{position:absolute;width:calc(28px * var(--kf,1));height:calc(28px * var(--kf,1));border-radius:50%;background:#D8B264;color:#1C1513;font:600 calc(13px * var(--kf,1))/calc(28px * var(--kf,1)) ui-monospace,Menlo,monospace;text-align:center;box-shadow:0 6px 18px -4px rgba(0,0,0,.7);pointer-events:auto;cursor:pointer;transform:translate(-50%,-50%)}' +
+  '.korr-nr.alt,.korr-nr.kunde{background:#F2E9DC;color:#130E0D}.korr-nr.an{box-shadow:0 0 0 calc(4px * var(--kf,1)) rgba(216,178,100,.35),0 6px 18px -4px rgba(0,0,0,.7)}';
+
+function liste() { return K[seite] || []; }
+function doc(f) { try { return f.contentDocument; } catch (e) { return null; } }
+function win(f) { try { return f.contentWindow; } catch (e) { return null; } }
+function frame(name) { return name === 'alt' ? fa : name === 'neu' ? fn : fk; }
+function ordner(name) { return name === 'alt' ? 'alt/' : name === 'neu' ? '../' : 'kunde/'; }
+function spec(k, name) { return k[name === 'neu' ? 'neu' : 'alt'] || (k.sel ? {sel: k.sel} : null); }
+function sichtbar(name) { return name !== 'kunde' || buehne.classList.contains('mit-kunde'); }
+
+/* Alle Fenster zeigen die Website wie am Rechner (1440 px breit), verkleinert auf die Spaltenbreite; am Handy in natürlicher Grösse */
+function masse() {
+  FRAMES.forEach(function (name) {
+    var f = frame(name), r = f.parentNode.getBoundingClientRect(); if (!r.width) return;
+    var sk = (window.innerWidth > 960 && r.width < BASIS) ? r.width / BASIS : 1;
+    skala[name] = sk;
+    f.style.width = sk < 1 ? BASIS + 'px' : '100%';
+    f.style.height = sk < 1 ? Math.round(r.height / sk) + 'px' : '100%';
+    f.style.transform = sk < 1 ? 'scale(' + sk + ')' : 'none';
+    var d = doc(f); if (d && d.documentElement) d.documentElement.style.setProperty('--kf', (1 / sk).toFixed(3));
+  });
+}
+
+function finde(d, sp) {
+  if (!d || !sp) return null;
+  if (sp.sel) return d.querySelector(sp.sel);
+  var wurzel = sp['in'] ? d.querySelector(sp['in']) : d.body;
+  if (!wurzel) return null;
+  var s = sp.exakt || sp.text, best = null, bestN = 1e9;
+  var alle = wurzel.querySelectorAll('*');
+  for (var i = 0; i < alle.length; i++) {
+    var e = alle[i];
+    if (/^(SCRIPT|STYLE|TEMPLATE)$/.test(e.tagName)) continue;
+    var t = (e.textContent || '').replace(/\s+/g, ' ').trim();
+    var ok = sp.exakt ? t === s : t.indexOf(s) >= 0;
+    if (!ok) continue;
+    var n = e.querySelectorAll('*').length;
+    if (n < bestN) { best = e; bestN = n; }
+  }
+  return best;
+}
+
+/* Markieren: die Stellen einmal suchen (teuer), die Nummern beim Scrollen nur neu legen (billig) */
+function suche(name) {
+  var d = doc(frame(name)); if (!d || !d.body) return;
+  if (!d.getElementById('korr-stil')) { var st = d.createElement('style'); st.id = 'korr-stil'; st.textContent = STIL; d.head.appendChild(st); }
+  d.documentElement.style.setProperty('--kf', (1 / (skala[name] || 1)).toFixed(3));
+  var alt = d.querySelectorAll('.korr-el'); for (var j = 0; j < alt.length; j++) alt[j].classList.remove('korr-el');
+  gefunden[name] = liste().map(function (k) { var e = finde(d, spec(k, name)); if (e && name !== 'kunde') e.classList.add('korr-el'); return e; });
+  lege(name);
+}
+function lege(name) {
+  var f = frame(name), d = doc(f), w = win(f); if (!d || !d.body || !w) return;
+  var eb = d.getElementById('korr-ebene');
+  if (!eb) { eb = d.createElement('div'); eb.id = 'korr-ebene'; eb.className = 'korr-ebene'; d.body.appendChild(eb); }
+  var els = gefunden[name] || [];
+  while (eb.children.length > els.length) eb.removeChild(eb.lastChild);
+  els.forEach(function (e, i) {
+    var nr = eb.children[i];
+    if (!nr) { nr = d.createElement('span'); nr.onclick = (function (i) { return function () { springe(i); }; })(i); eb.appendChild(nr); }
+    nr.className = 'korr-nr ' + name + (i === aktiv ? ' an' : '');
+    nr.textContent = i + 1; nr.title = liste()[i].t;
+    if (!e) { nr.style.display = 'none'; return; }
+    var k = liste()[i], a = (k && k.klick && d.querySelector(k.klick)) || e;   /* verborgene Antworten: die Nummer steht an der Frage */
+    var r = a.getBoundingClientRect();
+    nr.style.display = (r.width || r.height) ? '' : 'none';
+    nr.style.left = (r.left + w.scrollX + 14) + 'px'; nr.style.top = (r.top + w.scrollY) + 'px';
+  });
+}
+function sucheAlle() { FRAMES.forEach(suche); }
+function legeAlle() { FRAMES.forEach(lege); }
+
+/* Gleichlauf: die Abschnitte aller drei Seiten tragen dieselben Kennungen; dazwischen wird anteilig übertragen */
+function anker(name) {
+  var f = frame(name), d = doc(f), w = win(f); if (!d || !w) return [];
+  var a = [{id: '', top: 0}];
+  var ids = d.querySelectorAll('header[id], section[id], footer[id]');
+  for (var i = 0; i < ids.length; i++) {
+    var e = ids[i]; if (w.getComputedStyle(e).position === 'fixed' || !e.id) continue;
+    var r = e.getBoundingClientRect(); a.push({id: e.id, top: r.top + w.scrollY});
+  }
+  a.push({id: '~ende', top: Math.max(1, d.documentElement.scrollHeight - w.innerHeight)});
+  return a.sort(function (x, y) { return x.top - y.top; });
+}
+function uebertrage(y, von, nach) {
+  var A = anker(von), B = anker(nach), bk = {};
+  B.forEach(function (b) { bk[b.id] = b.top; });
+  var gem = A.filter(function (a) { return a.id in bk; });
+  if (gem.length < 2) { var m1 = Math.max(1, A[A.length - 1].top), m2 = B[B.length - 1].top; return y / m1 * m2; }
+  for (var i = 0; i < gem.length - 1; i++) {
+    var a0 = gem[i], a1 = gem[i + 1];
+    if (y >= a0.top && y <= a1.top) { var t = a1.top === a0.top ? 0 : (y - a0.top) / (a1.top - a0.top); return bk[a0.id] + t * (bk[a1.id] - bk[a0.id]); }
+  }
+  var l = gem[gem.length - 1]; return bk[l.id] + (y - l.top);
+}
+function sperren(wer, ms) { treiber = wer; clearTimeout(treiberTmr); treiberTmr = setTimeout(function () { treiber = null; }, ms); }
+function beimScrollen(name) {
+  lege(name);
+  if (treiber && treiber !== name) return;          /* dieses Fenster wird gerade von einem anderen geführt */
+  sperren(name, 160);
+  var w = win(frame(name)); if (!w) return;
+  FRAMES.forEach(function (andere) {
+    if (andere === name) return;
+    var w2 = win(frame(andere)); if (!w2 || !doc(frame(andere))) return;
+    w2.scrollTo({top: uebertrage(w.scrollY, name, andere), behavior: 'instant'});   /* sofort, sonst erzeugt ein weiches Scrollen Nachläufer, die zurücksteuern */
+    lege(andere);
+  });
+}
+
+function seiteVon(f) { var w = win(f); if (!w) return ''; return (w.location.pathname.split('/').pop() || 'index').replace(/\.html$/, '') || 'index'; }
+function lade(s) {
+  seite = s; location.hash = 'seite=' + s;
+  FRAMES.forEach(function (name) { var f = frame(name); if (seiteVon(f) !== s) f.src = ordner(name) + s + '.htm' + 'l'; });
+  aktiv = -1; gefunden = {alt: [], neu: [], kunde: []}; baueListe(); zeichneSeiten();
+}
+function bereitMachen(name) {
+  var f = frame(name);
+  f.addEventListener('load', function () {
+    var s = seiteVon(f), w = win(f), d = doc(f); if (!w || !d) return;
+    if (s !== seite) { lade(s); return; }
+    masse();
+    w.addEventListener('scroll', function () { beimScrollen(name); }, {passive: true});
+    w.addEventListener('resize', function () { suche(name); });
+    d.addEventListener('click', function (ev) {
+      var a = ev.target.closest && ev.target.closest('a[href]'); if (!a) return;
+      var h = a.getAttribute('href') || ''; if (/^(https?:|mailto:|tel:)/.test(h)) a.target = '_blank';
+      if (/\.html(#|$)/.test(h)) setTimeout(function () { var s2 = seiteVon(f); if (s2 !== seite) lade(s2); }, 300);
+    });
+    [300, 1200, 3000].forEach(function (ms) { setTimeout(function () { suche(name); }, ms); });
+    /* ein frisch geladenes Fenster stellt sich auf die anderen ein */
+    setTimeout(function () { var ref = name === 'neu' ? 'alt' : 'neu', wr = win(frame(ref)); if (wr && doc(frame(ref)) && wr.scrollY) { sperren(ref, 200); w.scrollTo({top: uebertrage(wr.scrollY, ref, name), behavior: 'instant'}); } }, 350);
+  });
+}
+FRAMES.forEach(bereitMachen);
+
+function springe(i) {
+  var k = liste()[i]; if (!k) return; aktiv = i;
+  sperren('springe', 900);
+  FRAMES.forEach(function (name) {
+    var f = frame(name), d = doc(f), w = win(f); if (!d || !w) return;
+    if (k.klick) { var b = d.querySelector(k.klick); if (b) b.click(); }
+    var e = finde(d, spec(k, name)); if (!e) return;
+    var r = e.getBoundingClientRect();
+    w.scrollTo({top: Math.max(0, r.top + w.scrollY - Math.round(w.innerHeight * .18)), behavior: 'smooth'});
+  });
+  setTimeout(sucheAlle, 950);
+  var lis = document.querySelectorAll('#liste-ol li'); lis.forEach(function (li, j) { li.classList.toggle('an', j === i); });
+  if (lis[i]) lis[i].scrollIntoView({block: 'nearest'});
+}
+function baueListe() {
+  var ol = document.getElementById('liste-ol'); ol.innerHTML = '';
+  liste().forEach(function (k, i) {
+    var li = document.createElement('li');
+    li.innerHTML = '<span class="nr">' + (i + 1) + '</span><div><b></b><div class="vn"><s></s><em></em></div>' + (k.kunde ? '<div class="ks">Eure Anmerkung · Seite ' + k.kunde + ' im PDF</div>' : '') + '</div>';
+    li.querySelector('b').textContent = k.t; li.querySelector('s').textContent = k.vorher || ''; li.querySelector('em').textContent = k.nachher || '';
+    li.onclick = function () { springe(i); }; ol.appendChild(li);
+  });
+  document.getElementById('anzahl').textContent = liste().length;
+}
+function zeichneSeiten() {
+  var n = document.getElementById('seiten'); n.innerHTML = '';
+  SEITEN.forEach(function (s) {
+    var b = document.createElement('button'); b.type = 'button'; b.textContent = s[1] + (K[s[0]] && K[s[0]].length ? ' · ' + K[s[0]].length : '');
+    b.className = s[0] === seite ? 'an' : ''; b.onclick = function () { lade(s[0]); }; n.appendChild(b);
+  });
+}
+function neuMessen() { masse(); setTimeout(function () { sucheAlle(); var wn = win(fn); if (wn && doc(fn)) { sperren('neu', 200); beimScrollen('neu'); } }, 60); }
+document.getElementById('kn-kunde').onclick = function () {
+  var an = buehne.classList.toggle('mit-kunde'); this.classList.toggle('an', an); this.setAttribute('aria-pressed', an);
+  if (an && !fk.src) fk.src = 'kunde/' + seite + '.htm' + 'l';
+  if (an && window.innerWidth <= 960) tab('kunde');
+  setTimeout(neuMessen, 50); setTimeout(neuMessen, 600);
+};
+function zu(kl, kn) { if (buehne.classList.contains(kl)) { buehne.classList.remove(kl); var b = document.getElementById(kn); b.classList.remove('an'); b.setAttribute('aria-pressed', false); } }
+document.getElementById('kn-liste').onclick = function () {
+  zu('mit-fragen', 'kn-fragen');
+  var an = buehne.classList.toggle('mit-liste'); this.classList.toggle('an', an); this.setAttribute('aria-pressed', an);
+  setTimeout(neuMessen, 50); setTimeout(neuMessen, 420);
+};
+function tab(t) { buehne.setAttribute('data-tab', t); document.querySelectorAll('.tabs button').forEach(function (b) { b.classList.toggle('an', b.getAttribute('data-tab') === t); }); setTimeout(neuMessen, 60); }
+document.querySelectorAll('.tabs button').forEach(function (b) { b.onclick = function () { tab(b.getAttribute('data-tab')); if (b.getAttribute('data-tab') === 'kunde' && !buehne.classList.contains('mit-kunde')) document.getElementById('kn-kunde').click(); }; });
+window.addEventListener('resize', function () { clearTimeout(window._rt); window._rt = setTimeout(neuMessen, 150); });
+document.getElementById('kn-fragen').onclick = function () {
+  zu('mit-liste', 'kn-liste');
+  var an = buehne.classList.toggle('mit-fragen'); this.classList.toggle('an', an); this.setAttribute('aria-pressed', an);
+  setTimeout(neuMessen, 50); setTimeout(neuMessen, 420);
+};
+function baueFragen() {
+  var ol = document.getElementById('fragen-ol'), gross = document.getElementById('gross');
+  gross.onclick = function () { gross.classList.remove('an'); };
+  FRAGEN.forEach(function (f, i) {
+    var li = document.createElement('li');
+    li.innerHTML = '<span class="nr">' + (i + 1) + '</span><div><b></b><p class="t"></p>' + (f.zusatz ? '<p class="zu"></p>' : '') + '<div class="fb"></div><button class="hin" type="button">Zur Stelle</button></div>';
+    li.querySelector('b').textContent = f.t; li.querySelector('.t').textContent = f.text; if (f.zusatz) li.querySelector('.zu').textContent = f.zusatz;
+    var fb = li.querySelector('.fb');
+    f.bilder.forEach(function (b) {
+      var fig = document.createElement('figure'), im = document.createElement('img'), cap = document.createElement('figcaption');
+      im.src = 'fragen/' + b[0]; im.alt = b[1]; im.loading = 'lazy'; cap.textContent = b[1];
+      im.onclick = function () { gross.querySelector('img').src = im.src; gross.classList.add('an'); };
+      fig.appendChild(im); fig.appendChild(cap); fb.appendChild(fig);
+    });
+    li.querySelector('.hin').onclick = function () {
+      var idx = f.nr - 1;
+      if (seite !== f.seite) { lade(f.seite); setTimeout(function () { springe(idx); }, 1600); } else springe(idx);
+    };
+    ol.appendChild(li);
+  });
+  document.getElementById('anzahl-f').textContent = FRAGEN.length;
+}
+baueFragen(); baueListe(); zeichneSeiten(); masse();
+fa.src = 'alt/' + seite + '.htm' + 'l'; fn.src = '../' + seite + '.htm' + 'l'; fk.src = 'kunde/' + seite + '.htm' + 'l';   // 06.11.2026: Anmerkungen gleich mitladen, nicht erst beim Klick
+</script>
+</body>
+</html>

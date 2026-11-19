@@ -972,3 +972,33 @@
   var f = document.querySelector('#lauter .lu-flyer'); if (!f || !window.wildSpaet) return;
   window.wildSpaet([[f, 'hoch', f]], '0px 0px -8% 0px');
 })();
+
+/* ---------- Auf unserer Bühne (06.11.2026): die Anfrage geht an /api/anfrage (art kuenstler) und landet in der Künstlerliste des Teams.
+   Ohne Verbindung bleibt alles stehen, die Meldung nennt Instagram der Bar. Es öffnet sich kein Mailprogramm. */
+(function () {
+  document.querySelectorAll('form[data-buehne]').forEach(function (f) {
+    var los = f.querySelector('.bu-los'), m = f.querySelector('.bu-meldung');
+    f.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var w = function (n) { var x = f.elements[n]; return x ? String(x.value || '').trim() : ''; };
+      var fehlt = [];
+      ['name', 'kontakt'].forEach(function (n) { var l = f.elements[n].closest('.bu-feld'); l.classList.toggle('fehlt', !w(n)); if (!w(n)) fehlt.push(n); });
+      if (fehlt.length) { m.className = 'bu-meldung fehl'; m.textContent = 'Bitte Name und E-Mail oder Telefon eintragen, damit wir dir antworten können.'; f.elements[fehlt[0]].focus(); return; }
+      var sp = f.querySelector('input[name=sparte]:checked');
+      var zeilen = ['Was du machst: ' + (sp ? sp.value : 'Anderes'), 'Wo wir reinhören können: ' + (w('links') || 'nicht angegeben'), 'Zeitraum: ' + (w('zeitraum') || 'offen'), 'Nachricht: ' + (w('nachricht').replace(/\n+/g, ' ') || '')];
+      los.disabled = true; m.className = 'bu-meldung'; m.textContent = 'Wird geschickt …';
+      fetch('/api/anfrage', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
+        art: 'kuenstler', formular: 'kuenstler', name: w('name'), kontakt: w('kontakt'), anliegen: 'Auftritt: ' + (sp ? sp.value : 'Anderes'),
+        nachricht: zeilen.join('\n'), website: w('website'), sprache: 'de', seite: location.pathname + '#buehne', seite_name: 'Programm · Wild Side' }) })
+        .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok) throw new Error(d.fehler || ''); return d; }); })
+        .then(function (d) {
+          var p = document.createElement('p'); p.className = 'bu-dank'; p.textContent = d.danke || 'Danke! Deine Anfrage ist beim Team. Wir hören rein und melden uns bei dir.';
+          f.appendChild(p); f.classList.add('fertig');
+        })
+        .catch(function (err) {
+          los.disabled = false; m.className = 'bu-meldung fehl';
+          m.textContent = (err && err.message ? err.message + ' ' : 'Gerade kam keine Verbindung zustande. ') + 'Deine Angaben sind noch da. Du erreichst die Bar auch über Instagram @walkonthewildside_hannover.';
+        });
+    });
+  });
+})();

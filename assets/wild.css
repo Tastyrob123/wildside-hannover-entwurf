@@ -1874,3 +1874,53 @@ html.js #auftakt .titel .zl.sofort .z>span{transform:none!important}
 #lauter .lu-flyer.sw{opacity:1!important;transform:translateY(200px) rotate(-2deg)!important;transition:transform 1.5s cubic-bezier(.22,1,.36,1)!important}
 #lauter .lu-flyer.sw.hoch,.ruhig #lauter .lu-flyer.sw{transform:rotate(-2deg)!important}
 @media (max-width:760px){#lauter .lu-flyer.sw{transform:translateY(120px) rotate(-1.2deg)!important}#lauter .lu-flyer.sw.hoch{transform:rotate(-1.2deg)!important}}
+
+/* ---------- Auf unserer Bühne (Programm, 06.11.2026): Anfrage von DJs, Live-Musik, Comedy und anderen Künstlern.
+   Felder wie «Reservieren» auf Besuch (dunkel, Goldlinie); die Sparte als Knöpfe im Hausstil statt einer Liste. Bewegung nur transform/opacity. */
+.bu-raster{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:clamp(34px,5vw,90px);align-items:start}
+.bu-text .t-kap{margin:0}
+.bu-text .text{margin-top:22px;font-size:clamp(17px,1.35vw,20px);line-height:1.6}
+.bu-liste{list-style:none;margin:30px 0 0;padding:0;display:grid;gap:0;border-top:1px solid var(--gold-ll)}
+.bu-liste li{display:grid;grid-template-columns:150px 1fr;gap:16px;align-items:baseline;padding:15px 0;border-bottom:1px solid var(--gold-ll)}
+.bu-liste li span:last-child{color:var(--text2)}
+.bu-form{position:relative;display:grid;gap:16px;padding:clamp(24px,3vw,40px);border-radius:var(--rand);background:var(--nacht2);box-shadow:inset 0 0 0 1px var(--gold-ll),var(--schatten)}
+.bu-form>.etikett{margin:0 0 4px}
+.bu-wahl{border:0;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.bu-wahl legend{display:block;width:100%;margin:0 0 10px;padding:0;font:500 11px/1 var(--lauf);letter-spacing:.17em;text-transform:uppercase;color:var(--gold)}
+.bu-chip{position:relative;cursor:pointer}
+.bu-chip input{position:absolute;opacity:0;width:1px;height:1px}
+.bu-chip span{display:inline-block;padding:12px 18px;border-radius:999px;box-shadow:inset 0 0 0 1px var(--gold-l);font:500 12px/1 var(--lauf);letter-spacing:.14em;text-transform:uppercase;color:var(--text);transition:background .4s,color .4s,transform .3s}
+.bu-chip:hover span{box-shadow:inset 0 0 0 1px var(--gold)}
+.bu-chip input:checked+span{background:var(--rot);color:var(--creme);box-shadow:0 12px 24px -12px rgba(240,50,63,.6)}
+.bu-chip input:focus-visible+span{outline:2px solid var(--creme);outline-offset:3px}
+.bu-chip:active span{transform:scale(.96)}
+.bu-feld{display:grid;gap:8px;min-width:0}
+.bu-feld>span{font:500 11px/1 var(--lauf);letter-spacing:.17em;text-transform:uppercase;color:var(--gold)}
+.bu-feld input,.bu-feld textarea{width:100%;min-width:0;background:var(--nacht);border:0;border-radius:10px;padding:15px 16px;color:var(--text);font:inherit;font-size:17px;box-shadow:inset 0 0 0 1px var(--gold-ll);outline:0;transition:box-shadow .5s;resize:vertical}
+.bu-feld input::placeholder,.bu-feld textarea::placeholder{color:var(--text3)}
+.bu-feld input:focus,.bu-feld textarea:focus{box-shadow:inset 0 0 0 1px var(--gold)}
+.bu-feld.fehlt input{box-shadow:inset 0 0 0 1.5px var(--rot)}
+.bu-honig{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.bu-los{justify-self:start;margin-top:6px}
+.bu-los[disabled]{opacity:.6;pointer-events:none}
+.bu-meldung{margin:0;min-height:1.4em;font-size:15px;color:var(--text2)}
+.bu-meldung.fehl{color:#ff8a8f}
+.bu-form.fertig>*:not(.bu-dank){display:none}
+.bu-dank{display:none;margin:0;font-family:var(--titel);font-size:clamp(24px,2.4vw,32px);line-height:1.25;color:var(--text)}
+.bu-form.fertig .bu-dank{display:block}
+@media (max-width:900px){.bu-raster{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:520px){.bu-liste li{grid-template-columns:1fr;gap:6px}.bu-chip span{padding:11px 14px}}
+
+/* 19.11.2026 Derya (Wild Side Änderungen Web.pdf): Logo «WALK ON THE WILD SIDE» auf einer Zeile statt der roten Form, drei Feste, drei Gastschichten */
+.leiste .logo{height:20px}
+.at-logo{width:clamp(240px,26vw,400px)}
+.bw4 .bw4-logo{width:clamp(200px,17vw,260px)}
+.fuss .logo,.f03 .f03-logo{width:clamp(200px,16vw,250px)}
+.wo-karte .wk-logo{width:clamp(200px,18vw,280px)}
+.vier.vier-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.vk-reihe{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:900px){.vier.vier-3{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:760px){.vk-reihe{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:700px){.at-logo{width:min(78vw,300px)}.leiste .logo{height:16px}}
+/* 19.11.2026: die neuen Tafel-Infos sind länger, am Handy eine Spalte statt zwei schmaler */
+@media (max-width:600px){.tk-gaenge{grid-template-columns:minmax(0,1fr)}.tk-gang:nth-child(odd){border-right:0}.tk-gang:not(:last-child){border-bottom:1px solid rgba(216,178,100,.3)}.tk-gang p{max-width:32ch}}
